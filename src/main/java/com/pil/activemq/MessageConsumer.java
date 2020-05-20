@@ -39,7 +39,7 @@ public class MessageConsumer {
 		if(System.getenv("DELAY") != null) {
 			delay = Integer.parseInt(System.getenv("DELAY"));
     	}
-		System.out.println("Pausing execution for 10 seconds");
+		System.out.println("Pausing execution for "+delay+" ms");
 		Thread.sleep(delay);
 		System.out.println("Start processing");
 		
