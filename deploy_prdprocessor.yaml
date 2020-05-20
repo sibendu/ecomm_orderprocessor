@@ -1,0 +1,37 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: prdprocessor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prdprocessor
+    spec:
+      containers:
+      - name: prdprocessor
+        image: sibendudas/orderprocessor
+        args: ["--INPUT_QUEUE=ORDER_PRD", "--OUTPUT_QUEUE=PRD_RESPONSE","--spring.activemq.broker-url=tcp://activemq.ecomm1.svc.cluster.local:61616"]
+        ports:
+        - containerPort: 8080
+          name: svc-port
+          protocol: TCP
+        env:
+        - name: ERP_NAME
+          value: "PRD"
+        - name: DELAY
+          value: "10000"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: prdprocessor
+spec:
+  clusterIP: None
+  ports:
+  - name: svc-port
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: prdprocessor

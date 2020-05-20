@@ -1,0 +1,8 @@
+1> Build 
+docker build -t sibendudas/orderprocessor .
+
+2> Run the container with host network
+docker run -p 8080:8080  --network host  --name orderprocessor  -it sibendudas/orderprocessor "--INPUT_QUEUE=input12"  "--OUTPUT_QUEUE=output12" 
+
+3> To call test REST endpoint:
+docker exec -it orderprocessor  sh -c "wget http://localhost:8080/api/myorder1111"

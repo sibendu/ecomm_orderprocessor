@@ -1,0 +1,37 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mp1processor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mp1processor
+    spec:
+      containers:
+      - name: mp1processor
+        image: sibendudas/orderprocessor
+        args: ["--INPUT_QUEUE=ORDER_MP1", "--OUTPUT_QUEUE=MP1_RESPONE","--spring.activemq.broker-url=tcp://activemq.ecomm1.svc.cluster.local:61616"]
+        ports:
+        - containerPort: 8080
+          name: svc-port
+          protocol: TCP
+        env:
+        - name: ERP_NAME
+          value: "MP1"
+        - name: DELAY
+          value: "15000"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mp1processor
+spec:
+  clusterIP: None
+  ports:
+  - name: svc-port
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: mp1processor
